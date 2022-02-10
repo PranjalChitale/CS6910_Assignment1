@@ -20,9 +20,9 @@ def softmax(x):
 	https://www.deeplearningbook.org/contents/numerical.html
 	We set z = x - max(x) and then compute the softmax of z.
 	"""
-	z = x - max(x)
-	exp = np.exp(z)
-	sum_exp = np.sum(exp)
+	z = x - np.max(x, axis = 1, keepdims = True) #Subtract max of each row. 
+	exp = np.exp(z) #Exponentiation
+	sum_exp = np.sum(exp, axis = 1, keepdims = True) #Sum of Exponentiated version.
 	return exp / sum_exp 
 
 #Derivative of Activation functions
