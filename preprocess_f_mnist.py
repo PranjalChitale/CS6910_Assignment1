@@ -1,6 +1,8 @@
 #Imports
 from keras.datasets import fashion_mnist
 import numpy as np
+from sklearn.model_selection import train_test_split 
+
 
 def flatten_images(dataset):
     """
@@ -20,12 +22,12 @@ def one_hot_encoder(labels, no_classes):
     return temp
 
 #generate val set from train set and return val and updated train set.
-### TODO : Implement Validation code
 def generate_val_set(train_images, train_labels, val_size):
     """
     Returns train_images, train_labels, val_images, val_labels.
     """
-    pass
+    train_images,val_images, train_labels, val_labels=train_test_split(train_images, train_labels,test_size=0.1,random_state=1)
+    return train_images, train_labels, val_images, val_labels
 
 def preprocess(train_images, train_labels, test_images, test_labels, val_size):
     """
@@ -50,15 +52,15 @@ def preprocess(train_images, train_labels, test_images, test_labels, val_size):
     test_images = flatten_images(test_images)
 
     #Generate validation set here
-    #train_images, train_labels, val_images, val_labels = generate_val_set(train_images, train_labels, val_size)
-    ###
+    train_images, train_labels, val_images, val_labels = generate_val_set(train_images, train_labels, val_size)
+    
     
     train_labels = one_hot_encoder(train_labels, num_classes)
-    #val_labels = one_hot_encoder(val_labels)
+    val_labels = one_hot_encoder(val_labels, num_classes)
     test_labels = one_hot_encoder(test_labels, num_classes)
 
     #return train_images, train_labels, val_images, val_labels, test_images, test_labels
-    return train_images, train_labels, test_images, test_labels
+    return train_images, train_labels, val_images, val_labels, test_images, test_labels
 
 
 
