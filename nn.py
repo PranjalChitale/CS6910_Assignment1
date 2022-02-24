@@ -90,4 +90,11 @@ class FFN(object):
             vgd(self, train_images, train_labels, val = val, epochs = epochs , lr = learning_rate, batch_size = batch_size)
         elif self.optimizer == "mgd":
             mgd(self, train_images, train_labels, val = val, epochs = epochs , lr = learning_rate, batch_size = batch_size, gamma = 0.9)
-          
+        elif self.optimizer == "nag":
+            nag(self, train_images, train_labels, val = val, epochs = epochs , lr = learning_rate, batch_size = batch_size, gamma = 0.9)
+        elif self.optimizer == "rmsprop":
+            rmsprop(self, train_images, train_labels, val = val, epochs = epochs, lr = learning_rate, batch_size = batch_size, beta_1 = 0.9)    
+        elif self.optimizer == "adam":
+            adam(self, train_images, train_labels, val = val, epochs = epochs, lr = learning_rate, batch_size = batch_size, beta_1 = 0.9, beta_2 = 0.999)
+        elif self.optimizer == "nadam":
+            nadam(self, train_images, train_labels, val = val, epochs = epochs, lr = learning_rate, batch_size = batch_size, beta_1 = 0.9, beta_2 = 0.999)   
