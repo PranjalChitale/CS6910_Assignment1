@@ -72,6 +72,7 @@ sweep_config = {
     }
 }
 
+#To add a new agent to an existing sweep, comment next line and directly put sweep_id in wandb.agent
 sweep_id = wandb.sweep(sweep_config, project=project_name, entity=entity)
 
-wandb.agent(sweep_id, project=project_name", function=train_wandb)
+wandb.agent(sweep_id, project=project_name, function=train_wandb)

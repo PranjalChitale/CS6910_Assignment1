@@ -5,6 +5,7 @@
 from keras.datasets import fashion_mnist
 import numpy as np
 import matplotlib.pyplot as plt
+import wandb
 
 #Getting the data
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
@@ -45,6 +46,7 @@ for i in range(0,len(sample_image_index)):
     plt.grid(False)
     plt.imshow(train_images[sample_image_index[i]], cmap=plt.cm.binary)
     plt.xlabel(class_dict[sample_image_class[i]], fontsize=8, fontweight='bold')
+wandb.log({"plot": plt})
 plt.show()
 
 

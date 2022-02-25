@@ -67,7 +67,7 @@ class FFN(object):
     def backward_propogation(self, y_true, y_pred):
         '''
         First calculates the gradient of the loss function.
-        And back propogates it by layer by layer till the input
+        And back propogates it backwards layer by layer till the input.
         '''
         loss_grad =  eval(self.loss_fn + "_grad" + "(y_true, y_pred)") 
         next_grad = loss_grad
@@ -75,6 +75,9 @@ class FFN(object):
             next_grad = self.layers[i].backward_pass(next_grad, self.weight_decay)
             
     def get_prediction(self, x):
+        '''
+        Runs forward propogation and returns the output after softmax as the predictions.
+        '''
         y_hat = self.forward_propogation(x)
         return y_hat
 

@@ -3,6 +3,9 @@ import math
 np.random.seed(0)
 
 def random_init(prev_neurons, num_neurons):
+    '''
+    Random initialization of weights and bias.
+    '''
     weights = np.random.randn(prev_neurons, num_neurons) 
     bias = np.random.randn(1, num_neurons)
     return weights, bias

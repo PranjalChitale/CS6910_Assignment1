@@ -7,21 +7,21 @@ from sklearn.model_selection import train_test_split
 def flatten_images(dataset):
     """
     Converts each 28x28 image into a 784 dimensional input vector.
-    Shape returned = (784, no_classes)
+    Shape returned = (no_of_images, 784)
     """
     return np.array([dataset[i].flatten() for i in range(len(dataset))])
 
 def one_hot_encoder(labels, no_classes):
     """
     Returns one hot representation of the label for each image.
-    Shape returned = (no_images, no_classes)
+    Shape returned = (no_of_images, no_classes)
     """
     temp = np.zeros((labels.shape[0], no_classes))
     for i in range(0,labels.shape[0]):
         temp[i][labels[i]] = 1
     return temp
 
-#generate val set from train set and return val and updated train set.
+#generate val set from train set and return updated train set and val set.
 def generate_val_set(train_images, train_labels, val_size):
     """
     Returns train_images, train_labels, val_images, val_labels.

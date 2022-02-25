@@ -3,12 +3,14 @@ from nn import *
 from metrics import *
 import copy
 import wandb
+import pickle
 
 def vgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.001, batch_size = 1):
     '''
+    Reference :- http://www.cse.iitm.ac.in/~miteshk/CS7015/Slides/Handout/Lecture5.pdf
     Implements the vanilla version of the Gradient Descent Algorithm
-    If bacth size is set to 1, acts like the Stochiastic version. 
-    If batch size is set, acts like the Mini-batch version.
+    If batch size is set to 1, acts like the Stochiastic version.
+    If batch size smaller than input.shape[0] is set, acts like the Mini-batch version. 
     If batch size is set to input.shape[0], batch gradient descent.
     '''
     best_model, best_acc = 0,0
@@ -41,10 +43,12 @@ def vgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.001, bat
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
 
     print(best_acc)
     return best_model
@@ -53,6 +57,7 @@ def vgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.001, bat
 def mgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batch_size = 1, gamma = 0.9):
     '''
     Implements Momentum based Gradient Descent.
+    Reference :- http://www.cse.iitm.ac.in/~miteshk/CS7015/Slides/Handout/Lecture5.pdf
     '''
     best_model, best_acc = 0,0
     prev_W = [np.zeros_like(layer.weights) for layer in ffn.layers]
@@ -94,10 +99,12 @@ def mgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batc
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
 
     print(best_acc)
     return best_model
@@ -106,6 +113,7 @@ def mgd(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batc
 def nag(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batch_size = 1, gamma = 0.9):
     '''
     Implements Nesterov Accelrated Gradient Descent.
+    Reference :- http://www.cse.iitm.ac.in/~miteshk/CS7015/Slides/Handout/Lecture5.pdf
     '''
     best_model, best_acc = 0,0
     prev_W = [np.zeros_like(layer.weights) for layer in ffn.layers]
@@ -119,12 +127,13 @@ def nag(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batc
 
             #Look ahead
             ffn_temp = copy.deepcopy(ffn)
-
+            #Take a step based on history.
             if j!=0:
                 for k in range(0, len(ffn_temp.layers)):
                     ffn_temp.layers[k].weights = ffn_temp.layers[k].weights - np.multiply(gamma, prev_W[k])
                     ffn_temp.layers[k].bias = ffn_temp.layers[k].bias - np.multiply(gamma, prev_B[k])
             
+            #Calculate look ahead gradients.
                 batch_pred = ffn_temp.get_prediction(batch_images)
                 ffn_temp.backward_propogation(batch_labels, batch_pred) 
 
@@ -157,10 +166,12 @@ def nag(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batc
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
 
     print(best_acc)
     return best_model
@@ -170,6 +181,7 @@ def nag(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batc
 def rmsprop(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batch_size = 1, beta_1 = 0.9):
     '''
     Implements RMSProp Gradient Descent.
+    Reference :- http://www.cse.iitm.ac.in/~miteshk/CS7015/Slides/Handout/Lecture5.pdf
     '''
     best_model, best_acc = 0,0
     eps = 1e-8
@@ -208,10 +220,12 @@ def rmsprop(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, 
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
 
     print(best_acc)
     return best_model
@@ -220,6 +234,7 @@ def rmsprop(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, 
 def adam(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, batch_size = 1, beta_1 = 0.9, beta_2 = 0.999):
     '''
     Implements Adam Gradient Descent.
+    Reference :- http://www.cse.iitm.ac.in/~miteshk/CS7015/Slides/Handout/Lecture5.pdf
     '''
     best_model, best_acc = 0,0
     eps = 1e-8
@@ -273,10 +288,12 @@ def adam(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, bat
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
 
     print(best_acc)
     return best_model
@@ -341,10 +358,13 @@ def nadam(ffn, train_images, train_labels, val = None, epochs =1 , lr = 0.01, ba
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_model = copy.deepcopy(ffn)
+                with open('model_pkl', 'wb') as files:
+                    pickle.dump(ffn, files)
 
-        print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
-        print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
-        wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+            print("Epoch {} completed, training_loss = {}, validation_loss = {}.".format(j, train_loss, val_loss))
+            print("Training accuracy = {}, Validation Accuracy = {}".format(train_acc, val_acc))
+            wandb.log({"train_acc": train_acc,"val_acc": val_acc,"train_loss": train_loss,"val_loss": val_loss})
+
     print(best_acc)
     return best_model
 
