@@ -12,7 +12,9 @@ model = FFN(input_dim = 784, num_classes = 10, optimizer=config.optimizer, weigh
 ```
 
 ## How to add a Hidden Layer to the network.
+```
 model.add_layer(config.hidden_layer_size, weight_init_method=config.weight_init, activation_func=config.activation_func)
+```
 
 ## How to add a New Optimizer function.
 
@@ -51,6 +53,20 @@ model.add_layer(10,weight_init_method="xavier_init",activation_func="linear")
 
 #Train the model
 model.train(train_images, train_labels, val = (val_images, val_labels), learning_rate= 0.0001, batch_size=128,epochs=10)
+
+```
+
+## Test the Model :
+
+```
+train_images, train_labels, val_images, val_labels, test_images, test_labels = preprocess(train_images, train_labels, test_images, test_labels, val_size)
+
+#Loads our trained model
+with open('model_pkl' , 'rb') as f:
+    ffn = pickle.load(f)
+
+#Uses it to get predictions on the test set.
+test_pred = ffn.get_prediction(test_images)
 
 ```
 
