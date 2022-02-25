@@ -1,4 +1,6 @@
-# CS6910 Assignment1 : February 2022
+# CS6910 Assignment1 : February 2022 
+
+[WANDB_Report](https://wandb.ai/pranjalchitale/CS6910_A1/reports/CS6910-Assignment-1-FFN--VmlldzoxNTk5OTcx)
 
 Implementation of a Feed Forward Network and various Optimization Algorithms for training the same.
 The implementation is from scratch and is based on numpy.
